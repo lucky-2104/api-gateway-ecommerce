@@ -1,0 +1,29 @@
+server:
+  port: <port>
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: service-1
+              uri: lb://<service-name>
+              predicates:
+                - Path=<path to allow>,<path 1>,<path 2>
+              filters:
+                - AddRequestHeader=X-Gateway-Source, api-gateway
+            - id: serive-2
+              uri: lb://<service-name>
+              predicates: 
+                - Path=<path1>,<path2>
+              filters:
+                - AddRequestHeader=X-Gateway-Source, api-gateway
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+  instance:
+    prefer-ip-address: true
