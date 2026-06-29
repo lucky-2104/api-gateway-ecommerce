@@ -1,0 +1,35 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: user-service
+              uri: lb://USER-SERVICE
+              predicates:
+                - Path=/api/v1/auth/**,/api/v1/admin/**
+              filters:
+                - AddRequestHeader=X-Gateway-Source, api-gateway
+            - id: product-service
+              uri: lb://PRODUCT-SERVICE
+              predicates: 
+                - Path=/api/v1/products/**
+              filters:
+                - AddRequestHeader=X-Gateway-Source, api-gateway
+            - id: order-service
+              uri: lb://ORDER-SERVICE
+              predicates:
+                - Path=/api/v1/orders/**
+              filters:
+                - AddRequestHeader=X-Gateway-Source, api-gateway
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka
+  instance:
+    prefer-ip-address: true
